@@ -1,17 +1,30 @@
 const router = require('express').Router();
 const { Product, Category, Tag, ProductTag } = require('../../models');
+const { findByPk } = require('../../models/Product');
 
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   // find all products
+  try{
+    const product = await Product.findAll({include: [Category, Tag]});
+    res.json(product);
+  }catch (err){
+    res.send(err);
+  }
   // be sure to include its associated Category and Tag data
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   // find a single product by its `id`
+  try{
+    const product = await Product.findByPk(req.params.id, {include: [Category, Tag]}); //requesting id from product model
+    res.json(product);
+  }catch (err){
+    res.send(err);
+  }
   // be sure to include its associated Category and Tag data
 });
 
@@ -91,6 +104,16 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  try{
+    const product =Product.destroy({
+      where:{
+        id:req.params.id
+      },
+    });
+    res.status(200).json(product)
+  }catch (err){
+    res.status(400).json(err);
+  }
 });
 
 module.exports = router;

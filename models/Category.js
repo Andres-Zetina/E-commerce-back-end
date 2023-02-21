@@ -17,6 +17,9 @@ Category.init(
         allowNull:false,
     }
   },
+
+  
+
   {
     sequelize,
     timestamps: false,
